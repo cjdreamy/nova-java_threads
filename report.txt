@@ -1,0 +1,11 @@
+Questions for students
+•How would you prevent two customers from purchasing the same last available product?
+•How can a thread pool improve system performance?
+•How would you implement a producer-consumer architecture for order processing?
+•How does a semaphore control the availability of delivery vehicles?
+•What happens when payment processing takes longer than warehouse processing?•How would you handle a thread failure during order fulfilment?
+•How can you ensure that an order is not delivered twice?
+•What is the difference between concurrency and parallelism in this system?
+Expected learning outcome: Understanding complex concurrent systems, thread pools,
+producer-consumer architectures, resource contention, synchronization, and fault handling.
+in real-world systems.

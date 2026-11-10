@@ -1,0 +1,71 @@
+java Threads Lab
+-----------------
+Problem 3: Integrated Logistics and E-Commerce Order Fulfilment System (Group 1-5)
+Scenario
+An e-commerce company operates an online shopping platform connected to a warehouse and a
+logistics delivery network.
+During a major online shopping promotion, 1,000 customers submit orders simultaneously.
+The system must coordinate the following activities:
+•Customers submit orders.
+•The e-commerce system validates payments.
+•Warehouse workers pick and package products.
+•The inventory system updates stock quantities.
+•Logistics personnel allocate delivery vehicles.
+•Delivery agents update delivery status.•
+Customers receive notifications when orders are dispatched and delivered.
+The warehouse has:
+•5 warehouse processing workers.
+•3 payment processing workers.
+•4 delivery vehicles.
+•100 units of Product A.
+•50 units of Product B.
+Multiple customers may attempt to purchase the last available units of the same product
+simultaneously.
+Programming tasks
+a. Implement Java classes for:
+•CustomerOrder
+•PaymentProcessor
+•InventoryManager
+•WarehouseWorker
+•DeliveryVehicle•DeliveryManager
+•NotificationService
+b. Create multiple threads to simulate simultaneous customer orders.
+c. Implement a concurrent order-processing pipeline:
+Customer Order Submission
+1,000 concurrent customer requests
+Payment Processing
+3 concurrent payment workers
+Inventory Validation and Reservation
+Prevent overselling and stock inconsistencies
+Warehouse Order Fulfilment
+5 concurrent warehouse workers
+Logistics and Delivery
+4 delivery vehicles
+Customer Notification
+Order dispatched and delivered
+d. Implement the pipeline using ExecutorService and BlockingQueue.
+e. Use Semaphore to restrict access to the four delivery vehicles.
+f. Use synchronization or atomic operations to prevent two customers from purchasing the same
+remaining stock.
+g. Implement order cancellation. If payment fails or an order is cancelled before dispatch, reserved
+stock should be released appropriately.h. Generate a final report showing:
+•Total orders received.
+•Successful payments.
+•Failed payments.
+•Orders fulfilled.
+•Orders delivered.
+•Orders cancelled.
+•Remaining inventory.
+•Vehicle utilization.
+
+Questions for students
+•How would you prevent two customers from purchasing the same last available product?
+•How can a thread pool improve system performance?
+•How would you implement a producer-consumer architecture for order processing?
+•How does a semaphore control the availability of delivery vehicles?
+•What happens when payment processing takes longer than warehouse processing?•How would you handle a thread failure during order fulfilment?
+•How can you ensure that an order is not delivered twice?
+•What is the difference between concurrency and parallelism in this system?
+Expected learning outcome: Understanding complex concurrent systems, thread pools,
+producer-consumer architectures, resource contention, synchronization, and fault handling.
+in real-world systems.
