@@ -1,3 +1,4 @@
+
 public class NotificationService {
     private final Object lock = new Object();
 
@@ -7,4 +8,18 @@ public class NotificationService {
                     " -> " + message);
         }
     }
+
+    // Additional notification methods
+    public void notifyPaymentSuccessful(CustomerOrder order) {
+        send(order, "Payment successful");
+    }
+
+    public void notifyOrderDispatched(CustomerOrder order) {
+        send(order, "Your order has been dispatched");
+    }
+
+    public void notifyOrderDelivered(CustomerOrder order) {
+        send(order, "Your order has been delivered");
+    }
 }
+
