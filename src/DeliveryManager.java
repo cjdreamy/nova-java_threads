@@ -49,11 +49,12 @@ public class DeliveryManager implements Runnable {
 
     private void processOrder(CustomerOrder order) {
         boolean permitHeld = false;
+        DeliveryVehicle vehicle = null;
         try {
             vehicleSemaphore.acquire();
             permitHeld = true;
 
-            DeliveryVehicle vehicle = getAvailableVehicle();
+            vehicle = getAvailableVehicle();
             if (vehicle == null) {
                 inputQueue.offer(order);
                 return;
@@ -71,10 +72,12 @@ public class DeliveryManager implements Runnable {
             order.setLastMessage("Order delivered successfully");
             deliveredOrders.incrementAndGet();
             notificationService.send(order, "Order delivered successfully to customer " + order.getCustomerId() + ".");
-            vehicle.setInUse(false);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {
+            if (vehicle != null) {
+                vehicle.setInUse(false);
+            }
             if (permitHeld) {
                 vehicleSemaphore.release();
             }

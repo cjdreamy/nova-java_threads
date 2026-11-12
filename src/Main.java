@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,7 +21,6 @@ public class Main {
 
         BlockingQueue<CustomerOrder> submittedOrders = new LinkedBlockingQueue<>();
         BlockingQueue<CustomerOrder> paymentQueue = new LinkedBlockingQueue<>();
-        BlockingQueue<CustomerOrder> warehouseQueue = new LinkedBlockingQueue<>();
         BlockingQueue<CustomerOrder> deliveryQueue = new LinkedBlockingQueue<>();
 
         AtomicInteger totalReceived = new AtomicInteger(0);
@@ -31,16 +30,13 @@ public class Main {
         AtomicInteger fulfilledOrders = new AtomicInteger(0);
         AtomicInteger deliveredOrders = new AtomicInteger(0);
 
-        AtomicBoolean submissionFinished = new AtomicBoolean(false);
         AtomicBoolean paymentStageFinished = new AtomicBoolean(false);
         AtomicBoolean warehouseStageFinished = new AtomicBoolean(false);
         AtomicBoolean deliveryStageFinished = new AtomicBoolean(false);
 
         Set<Integer> cancelledOrderIds = new HashSet<>();
-        Random random = new Random();
-
         for (int i = 0; i < 80; i++) {
-            cancelledOrderIds.add(random.nextInt(totalOrders) + 1);
+            cancelledOrderIds.add(ThreadLocalRandom.current().nextInt(totalOrders) + 1);
         }
 
         ExecutorService submissionPool = Executors.newFixedThreadPool(20);
@@ -48,6 +44,7 @@ public class Main {
             final int finalOrderId = orderId;
             submissionPool.submit(() -> {
                 String[] products = {"Product A", "Product B"};
+                ThreadLocalRandom random = ThreadLocalRandom.current();
                 String product = products[random.nextInt(products.length)];
                 int quantity = 1 + random.nextInt(3);
                 int customerId = 1000 + random.nextInt(2000);
@@ -100,20 +97,21 @@ public class Main {
         }
 
         submissionPool.shutdown();
-        submissionPool.awaitTermination(10, TimeUnit.SECONDS);
-        submissionFinished.set(true);
+        submissionPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-        paymentPool.shutdown();
-        paymentPool.awaitTermination(20, TimeUnit.SECONDS);
+        // Signal each consumer stage only after its producer stage has finished.
+        // This lets workers drain queued orders before the next stage is closed.
         paymentStageFinished.set(true);
+        paymentPool.shutdown();
+        paymentPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-        warehousePool.shutdown();
-        warehousePool.awaitTermination(25, TimeUnit.SECONDS);
         warehouseStageFinished.set(true);
+        warehousePool.shutdown();
+        warehousePool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-        deliveryPool.shutdown();
-        deliveryPool.awaitTermination(25, TimeUnit.SECONDS);
         deliveryStageFinished.set(true);
+        deliveryPool.shutdown();
+        deliveryPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
         System.out.println("\n=== Final Report ===");
         System.out.println("Total orders received: " + totalReceived.get());

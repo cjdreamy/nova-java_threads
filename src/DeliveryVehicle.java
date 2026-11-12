@@ -34,4 +34,10 @@ public class DeliveryVehicle {
     public int getTotalItemsDelivered() {
         return totalItemsDelivered.get();
     }
+
+    @Override
+    public String toString() {
+        return "Vehicle " + vehicleId + "{trips=" + totalTrips.get() +
+                ", itemsDelivered=" + totalItemsDelivered.get() + '}';
+    }
 }
