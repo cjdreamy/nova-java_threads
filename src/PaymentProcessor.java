@@ -99,6 +99,7 @@ public class PaymentProcessor implements Runnable {
 
         order.setStatus(CustomerOrder.OrderStatus.INVENTORY_RESERVED);
         order.setLastMessage("Stock reserved");
+        notificationService.notifyPaymentSuccessful(order);
         nextQueue.offer(order);
     }
 }
